@@ -157,7 +157,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const stat = await fs.stat(filePath);
       res.setHeader('Content-Length', stat.size);
       
-      const fileStream = fs.createReadStream(filePath);
+      const fileStream = fsSync.createReadStream(filePath);
       fileStream.pipe(res);
     } catch (error: any) {
       console.error('Error streaming audio:', error);
@@ -190,7 +190,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.setHeader('Content-Type', 'audio/mpeg');
       res.setHeader('Content-Disposition', `attachment; filename="${track.title}.mp3"`);
       
-      const fileStream = fs.createReadStream(filePath);
+      const fileStream = fsSync.createReadStream(filePath);
       fileStream.pipe(res);
     } catch (error: any) {
       console.error('Error downloading audio:', error);
@@ -251,7 +251,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         transposedFilePath = await simulateAudioTransposition(
           trackId,
           semitones,
-          async (progress) => {
+          async (progress: number) => {
             await storage.updateProcessingStatus(trackId, {
               progress
             });
@@ -267,7 +267,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         currentKey: targetKey,
         currentScale: targetScale,
         filePath: transposedFilePath,
-        transposedPaths: transposedPaths
+        transposedPaths: JSON.stringify(transposedPaths)
       });
       
       // Update status to complete
@@ -299,7 +299,7 @@ async function processYouTubeVideo(trackId: string, videoUrl: string): Promise<v
     const { filePath, videoId, title, artist, duration } = await simulateAudioProcessing(
       trackId,
       videoUrl,
-      async (progress) => {
+      async (progress: number) => {
         // First update status to downloading (0-50%)
         if (progress <= 50) {
           await storage.updateProcessingStatus(trackId, {
@@ -322,7 +322,6 @@ async function processYouTubeVideo(trackId: string, videoUrl: string): Promise<v
     
     // Create audio track in storage
     await storage.createAudioTrack({
-      trackId,
       title,
       artist,
       videoId,
