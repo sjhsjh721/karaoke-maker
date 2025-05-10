@@ -1,0 +1,107 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap');
+
+:root {
+  --background: 0 0% 96.1%;
+  --foreground: 240 10% 3.9%;
+  --muted: 240 4.8% 95.9%;
+  --muted-foreground: 240 3.8% 46.1%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 240 10% 3.9%;
+  --card: 0 0% 100%;
+  --card-foreground: 240 10% 3.9%;
+  --border: 240 5.9% 90%;
+  --input: 240 5.9% 90%;
+  --primary: 271 100% 45.9%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 142 100% 39%;
+  --secondary-foreground: 0 0% 100%;
+  --accent: 24 100% 50%;
+  --accent-foreground: 0 0% 100%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 0 0% 98%;
+  --ring: 240 10% 3.9%;
+  --radius: 0.5rem;
+
+  --sidebar-background: 240 10% 3.9%;
+  --sidebar-foreground: 0 0% 98%;
+  --sidebar-primary: 271 100% 45.9%;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 24 100% 50%;
+  --sidebar-accent-foreground: 0 0% 100%;
+  --sidebar-border: 240 3.7% 15.9%;
+  --sidebar-ring: 240 4.9% 83.9%;
+
+  --chart-1: 271 100% 45.9%;
+  --chart-2: 142 100% 39%;
+  --chart-3: 24 100% 50%;
+  --chart-4: 240 10% 3.9%;
+  --chart-5: 240 5% 64.9%;
+}
+
+.dark {
+  --background: 240 10% 3.9%;
+  --foreground: 0 0% 98%;
+  --muted: 240 3.7% 15.9%;
+  --muted-foreground: 240 5% 64.9%;
+  --popover: 240 10% 3.9%;
+  --popover-foreground: 0 0% 98%;
+  --card: 240 10% 3.9%;
+  --card-foreground: 0 0% 98%;
+  --border: 240 3.7% 15.9%;
+  --input: 240 3.7% 15.9%;
+  --primary: 271 100% 45.9%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 142 100% 39%;
+  --secondary-foreground: 0 0% 100%;
+  --accent: 24 100% 50%;
+  --accent-foreground: 0 0% 100%;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 0 0% 98%;
+  --ring: 240 4.9% 83.9%;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-inter antialiased bg-background text-foreground;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-poppins;
+  }
+}
+
+@layer components {
+  .waveform-container {
+    background: linear-gradient(180deg, rgba(98, 0, 234, 0.05) 0%, rgba(98, 0, 234, 0.02) 100%);
+  }
+
+  .audio-progress {
+    @apply appearance-none h-1.5 rounded-full bg-neutral-300;
+  }
+
+  .audio-progress::-webkit-slider-thumb {
+    @apply appearance-none w-3.5 h-3.5 rounded-full bg-primary cursor-pointer;
+  }
+
+  .key-selector {
+    @apply grid grid-cols-12 gap-2;
+  }
+
+  @keyframes pulse {
+    0% { transform: scale(0.95); opacity: 0.7; }
+    50% { transform: scale(1); opacity: 1; }
+    100% { transform: scale(0.95); opacity: 0.7; }
+  }
+
+  .processing-animation {
+    animation: pulse 1.5s infinite ease-in-out;
+  }
+}
