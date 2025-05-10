@@ -15,17 +15,17 @@ export default function Header() {
           <ul className="flex space-x-6">
             <li>
               <Link href="/">
-                <a className="text-neutral-700 hover:text-primary transition-colors font-medium">Home</a>
+                <span className="text-neutral-700 hover:text-primary transition-colors font-medium cursor-pointer">Home</span>
               </Link>
             </li>
             <li>
               <Link href="/#how-it-works">
-                <a className="text-neutral-700 hover:text-primary transition-colors font-medium">How It Works</a>
+                <span className="text-neutral-700 hover:text-primary transition-colors font-medium cursor-pointer">How It Works</span>
               </Link>
             </li>
             <li>
               <Link href="/#faq">
-                <a className="text-neutral-700 hover:text-primary transition-colors font-medium">FAQ</a>
+                <span className="text-neutral-700 hover:text-primary transition-colors font-medium cursor-pointer">FAQ</span>
               </Link>
             </li>
           </ul>

@@ -34,30 +34,30 @@ export default function Footer() {
           <div>
             <h3 className="font-poppins font-semibold text-lg mb-4 text-white">Product</h3>
             <ul className="space-y-2">
-              <li><Link href="/features"><a className="hover:text-white transition-colors">Features</a></Link></li>
-              <li><Link href="/pricing"><a className="hover:text-white transition-colors">Pricing</a></Link></li>
-              <li><Link href="/api"><a className="hover:text-white transition-colors">API</a></Link></li>
-              <li><Link href="/integrations"><a className="hover:text-white transition-colors">Integrations</a></Link></li>
+              <li><Link href="/features"><span className="hover:text-white transition-colors cursor-pointer">Features</span></Link></li>
+              <li><Link href="/pricing"><span className="hover:text-white transition-colors cursor-pointer">Pricing</span></Link></li>
+              <li><Link href="/api"><span className="hover:text-white transition-colors cursor-pointer">API</span></Link></li>
+              <li><Link href="/integrations"><span className="hover:text-white transition-colors cursor-pointer">Integrations</span></Link></li>
             </ul>
           </div>
           
           <div>
             <h3 className="font-poppins font-semibold text-lg mb-4 text-white">Resources</h3>
             <ul className="space-y-2">
-              <li><Link href="/docs"><a className="hover:text-white transition-colors">Documentation</a></Link></li>
-              <li><Link href="/tutorials"><a className="hover:text-white transition-colors">Tutorials</a></Link></li>
-              <li><Link href="/blog"><a className="hover:text-white transition-colors">Blog</a></Link></li>
-              <li><Link href="/support"><a className="hover:text-white transition-colors">Support</a></Link></li>
+              <li><Link href="/docs"><span className="hover:text-white transition-colors cursor-pointer">Documentation</span></Link></li>
+              <li><Link href="/tutorials"><span className="hover:text-white transition-colors cursor-pointer">Tutorials</span></Link></li>
+              <li><Link href="/blog"><span className="hover:text-white transition-colors cursor-pointer">Blog</span></Link></li>
+              <li><Link href="/support"><span className="hover:text-white transition-colors cursor-pointer">Support</span></Link></li>
             </ul>
           </div>
           
           <div>
             <h3 className="font-poppins font-semibold text-lg mb-4 text-white">Company</h3>
             <ul className="space-y-2">
-              <li><Link href="/about"><a className="hover:text-white transition-colors">About</a></Link></li>
-              <li><Link href="/careers"><a className="hover:text-white transition-colors">Careers</a></Link></li>
-              <li><Link href="/privacy"><a className="hover:text-white transition-colors">Privacy Policy</a></Link></li>
-              <li><Link href="/terms"><a className="hover:text-white transition-colors">Terms of Service</a></Link></li>
+              <li><Link href="/about"><span className="hover:text-white transition-colors cursor-pointer">About</span></Link></li>
+              <li><Link href="/careers"><span className="hover:text-white transition-colors cursor-pointer">Careers</span></Link></li>
+              <li><Link href="/privacy"><span className="hover:text-white transition-colors cursor-pointer">Privacy Policy</span></Link></li>
+              <li><Link href="/terms"><span className="hover:text-white transition-colors cursor-pointer">Terms of Service</span></Link></li>
             </ul>
           </div>
         </div>
