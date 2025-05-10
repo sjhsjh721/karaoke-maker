@@ -6,8 +6,10 @@ import { v4 as uuidv4 } from 'uuid';
 import multer from 'multer';
 import { body, validationResult } from 'express-validator';
 import fs from 'fs/promises';
-import { downloadYouTubeAudio, extractVideoId } from './youtubeDownloader';
-import { extractInstrumental, transposeAudio, calculateSemitones, generateWaveformData } from './audioProcessor';
+import * as fsSync from 'fs';
+import { extractVideoId } from './youtubeDownloader';
+import { calculateSemitones } from './audioProcessor';
+import { simulateAudioProcessing, simulateAudioTransposition, generateSimulatedWaveformData } from './mockAudioProcessor';
 import { youtubeUrlSchema, transposeRequestSchema } from '@shared/schema';
 
 // Configure multer for file storage (although we'll use the storage interface)
@@ -245,10 +247,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
           progress: 100
         });
       } else {
-        // Perform transposition
-        transposedFilePath = await transposeAudio(
+        // Simulate transposition
+        transposedFilePath = await simulateAudioTransposition(
           trackId,
-          track.filePath,
           semitones,
           async (progress) => {
             await storage.updateProcessingStatus(trackId, {
@@ -294,38 +295,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
 // Background processing function
 async function processYouTubeVideo(trackId: string, videoUrl: string): Promise<void> {
   try {
-    // Download from YouTube
-    const { filePath, videoId, title, artist, duration } = await downloadYouTubeAudio(
+    // Simulate downloading and processing the audio
+    const { filePath, videoId, title, artist, duration } = await simulateAudioProcessing(
       trackId,
       videoUrl,
       async (progress) => {
-        await storage.updateProcessingStatus(trackId, {
-          status: 'downloading',
-          progress: progress / 2 // First half of the progress is download
-        });
+        // First update status to downloading (0-50%)
+        if (progress <= 50) {
+          await storage.updateProcessingStatus(trackId, {
+            status: 'downloading',
+            progress: progress
+          });
+        } 
+        // Then update to processing (50-100%)
+        else {
+          await storage.updateProcessingStatus(trackId, {
+            status: 'processing',
+            progress: progress
+          });
+        }
       }
     );
     
-    // Update status to processing
-    await storage.updateProcessingStatus(trackId, {
-      status: 'processing',
-      progress: 50
-    });
-    
-    // Extract instrumental
-    const instrumentalFilePath = await extractInstrumental(
-      trackId,
-      filePath,
-      async (progress) => {
-        await storage.updateProcessingStatus(trackId, {
-          status: 'processing',
-          progress: 50 + progress / 2 // Second half is processing
-        });
-      }
-    );
-    
-    // Generate waveform data
-    const waveformData = await generateWaveformData(instrumentalFilePath);
+    // Generate simulated waveform data
+    const waveformData = generateSimulatedWaveformData();
     
     // Create audio track in storage
     await storage.createAudioTrack({
@@ -338,7 +331,7 @@ async function processYouTubeVideo(trackId: string, videoUrl: string): Promise<v
       currentKey: 'C',
       currentScale: 'major',
       duration,
-      filePath: instrumentalFilePath,
+      filePath: filePath, // Using the simulated file path
       waveformData: JSON.stringify(waveformData)
     });
     
