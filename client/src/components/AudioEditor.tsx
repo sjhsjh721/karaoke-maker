@@ -5,12 +5,9 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Label } from '@/components/ui/label';
 import { useAudio } from '@/contexts/AudioContext';
 import { audioProcessor } from '@/lib/audioProcessor';
-import { musicalKeys, formatTime, calculateSemitones } from '@/lib/utils';
-import { type ScaleType } from '@/lib/utils';
+import { formatTime } from '@/lib/utils';
 
 export default function AudioEditor() {
   const { 
@@ -25,8 +22,6 @@ export default function AudioEditor() {
     processingStatus
   } = useAudio();
   
-  const [selectedKey, setSelectedKey] = useState(currentTrack?.currentKey || 'C');
-  const [selectedScale, setSelectedScale] = useState<ScaleType>(currentTrack?.currentScale || 'major');
   const [fineTuneSemitones, setFineTuneSemitones] = useState(0);
   const waveformRef = useRef<HTMLDivElement>(null);
   const [duration, setDuration] = useState(0);
@@ -45,13 +40,6 @@ export default function AudioEditor() {
       }
     };
   }, [currentTrack, waveformRef.current]);
-  
-  useEffect(() => {
-    if (currentTrack) {
-      setSelectedKey(currentTrack.currentKey);
-      setSelectedScale(currentTrack.currentScale);
-    }
-  }, [currentTrack]);
   
   const initializeWaveform = async () => {
     if (!waveformRef.current || !currentTrack) return;
@@ -272,89 +260,50 @@ export default function AudioEditor() {
         </div>
       </div>
       
-      {/* Pitch & Key Controls */}
+      {/* Pitch Controls */}
       <div className="mb-8">
-        <h3 className="font-poppins font-medium text-lg mb-4">Adjust Musical Key</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Key Selector */}
-          <div>
-            <label className="block text-sm font-medium text-neutral-700 mb-2">Select Key</label>
-            <div className="key-selector mb-4">
-              {musicalKeys.map((key) => (
-                <button
-                  key={key}
-                  className={`py-2 border rounded-md text-sm font-medium transition-colors ${
-                    selectedKey === key
-                      ? 'bg-primary text-white border-primary'
-                      : 'border-neutral-300 hover:border-primary hover:text-primary'
-                  }`}
-                  onClick={() => handleKeySelect(key)}
-                  disabled={isProcessing}
-                >
-                  {key}
-                </button>
-              ))}
-            </div>
-            <RadioGroup 
-              value={selectedScale} 
-              onValueChange={handleScaleChange}
-              className="flex gap-4 mb-2"
-              disabled={isProcessing}
+        <h3 className="font-poppins font-medium text-lg mb-4">Adjust Pitch</h3>
+        <div className="max-w-lg mx-auto">
+          <label className="block text-sm font-medium text-neutral-700 mb-2">Fine Tune Pitch</label>
+          <div className="flex items-center gap-4 mb-4">
+            <button 
+              className="h-12 w-12 rounded-full bg-neutral-200 flex items-center justify-center hover:bg-neutral-300 transition-colors"
+              onClick={decreaseFineTune}
+              disabled={fineTuneSemitones <= -12 || isProcessing}
             >
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="major" id="major" />
-                <Label htmlFor="major">Major</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="minor" id="minor" />
-                <Label htmlFor="minor">Minor</Label>
-              </div>
-            </RadioGroup>
-            <p className="text-sm text-neutral-500">
-              Original Key: {currentTrack.originalKey} {currentTrack.originalScale}
-            </p>
-          </div>
-          
-          {/* Pitch Control */}
-          <div>
-            <label className="block text-sm font-medium text-neutral-700 mb-2">Fine Tune Pitch</label>
-            <div className="flex items-center gap-4 mb-4">
-              <button 
-                className="h-10 w-10 rounded-full bg-neutral-200 flex items-center justify-center hover:bg-neutral-300 transition-colors"
-                onClick={decreaseFineTune}
-                disabled={fineTuneSemitones <= -12 || isProcessing}
+              <Minus className="text-neutral-700 w-5 h-5" />
+            </button>
+            <div className="flex-grow h-12 bg-neutral-100 rounded-lg relative">
+              <div className="absolute inset-y-0 left-1/2 w-0.5 bg-neutral-300"></div>
+              <div className="absolute inset-y-0 left-1/4 w-0.5 bg-neutral-200"></div>
+              <div className="absolute inset-y-0 left-3/4 w-0.5 bg-neutral-200"></div>
+              <div 
+                className="absolute top-0 bottom-0 flex items-center" 
+                style={{ 
+                  left: `${((fineTuneSemitones + 12) / 24) * 100}%` 
+                }}
               >
-                <Minus className="text-neutral-700 w-4 h-4" />
-              </button>
-              <div className="flex-grow h-10 bg-neutral-100 rounded-lg relative">
-                <div className="absolute inset-y-0 left-1/2 w-0.5 bg-neutral-300"></div>
-                <div className="absolute inset-y-0 left-1/4 w-0.5 bg-neutral-200"></div>
-                <div className="absolute inset-y-0 left-3/4 w-0.5 bg-neutral-200"></div>
-                <div 
-                  className="absolute top-0 bottom-0 flex items-center" 
-                  style={{ 
-                    left: `${((fineTuneSemitones + 12) / 24) * 100}%` 
-                  }}
-                >
-                  <div className="h-8 w-4 bg-primary rounded-full -ml-2 cursor-move"></div>
-                </div>
+                <div className="h-10 w-5 bg-primary rounded-full -ml-2.5 cursor-pointer"></div>
               </div>
-              <button 
-                className="h-10 w-10 rounded-full bg-neutral-200 flex items-center justify-center hover:bg-neutral-300 transition-colors"
-                onClick={increaseFineTune}
-                disabled={fineTuneSemitones >= 12 || isProcessing}
-              >
-                <Plus className="text-neutral-700 w-4 h-4" />
-              </button>
             </div>
-            <div className="flex justify-between text-sm text-neutral-600">
-              <span>-12 semitones</span>
-              <span>+12 semitones</span>
-            </div>
-            <p className="text-sm text-neutral-500 mt-2">
-              Current adjustment: {fineTuneSemitones > 0 ? '+' : ''}{fineTuneSemitones} semitones
-            </p>
+            <button 
+              className="h-12 w-12 rounded-full bg-neutral-200 flex items-center justify-center hover:bg-neutral-300 transition-colors"
+              onClick={increaseFineTune}
+              disabled={fineTuneSemitones >= 12 || isProcessing}
+            >
+              <Plus className="text-neutral-700 w-5 h-5" />
+            </button>
           </div>
+          <div className="flex justify-between text-sm text-neutral-600 mb-2">
+            <span>-12 semitones (lower)</span>
+            <span>+12 semitones (higher)</span>
+          </div>
+          <p className="text-center text-lg font-medium text-primary mt-4">
+            Current adjustment: {fineTuneSemitones > 0 ? '+' : ''}{fineTuneSemitones} semitones
+          </p>
+          <p className="text-center text-sm text-neutral-500 mt-1">
+            Use the slider to adjust the pitch up or down
+          </p>
         </div>
       </div>
       

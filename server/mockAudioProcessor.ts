@@ -27,8 +27,9 @@ export async function simulateAudioProcessing(
   // Mock file path
   const filePath = path.join(outputDir, 'simulated.mp3');
 
-  // Create an empty file to simulate the download
-  await fs.writeFile(filePath, '');
+  // Copy the sample audio file instead of creating an empty file
+  const samplePath = path.resolve('.tmp/sample_audio.mp3');
+  await fs.copyFile(samplePath, filePath);
 
   // Get mock video details based on ID (simplified)
   const { title, artist, duration } = getMockVideoDetails(videoId);
@@ -60,8 +61,9 @@ export async function simulateAudioTransposition(
   // Mock file path for transposed audio
   const filePath = path.join(outputDir, `transposed_${semitones}.mp3`);
 
-  // Create an empty file to simulate the transposition
-  await fs.writeFile(filePath, '');
+  // Copy the sample audio file instead of creating an empty file
+  const samplePath = path.resolve('.tmp/sample_audio.mp3');
+  await fs.copyFile(samplePath, filePath);
 
   // Simulate processing with delay and progress
   await simulateProgressiveTask(progress => {
