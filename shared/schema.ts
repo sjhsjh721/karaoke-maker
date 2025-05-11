@@ -15,8 +15,7 @@ export const audioTracks = pgTable("audio_tracks", {
   currentScale: text("current_scale").default("major"),
   duration: integer("duration").default(0),
   filePath: text("file_path").notNull(),
-  transposedPaths: jsonb("transposed_paths").default({}),
-  waveformData: text("waveform_data").default(""),
+  originalFilePath: text("original_file_path").notNull(),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
@@ -43,6 +42,7 @@ export const insertAudioTrackSchema = createInsertSchema(audioTracks).pick({
   currentScale: true,
   duration: true,
   filePath: true,
+  originalFilePath: true,
 });
 
 export const insertProcessingStatusSchema = createInsertSchema(processingStatus).pick({

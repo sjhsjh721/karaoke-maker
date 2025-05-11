@@ -2,6 +2,8 @@ import { spawn, exec } from 'child_process';
 import { storage } from './storage';
 import path from 'path';
 import fs from 'fs/promises';
+import * as fsSync from 'fs';
+import os from 'os';
 
 // Utility to extract video ID from YouTube URL
 export function extractVideoId(url: string): string | null {
@@ -34,28 +36,70 @@ export async function downloadYouTubeAudio(trackId: string, url: string, progres
   }, 100);
   
   return new Promise((resolve, reject) => {
-    const pythonScript = path.resolve('youtube_download.py');
+    // 절대 경로 사용
+    const pythonScript = path.resolve(process.cwd(), 'youtube_download.py');
     
-    // Use our Python script to download the audio
-    const pythonProcess = exec(`python3 ${pythonScript} "${url}" "${downloadDir}"`, {
-      maxBuffer: 1024 * 1024 * 10 // 10MB buffer
-    }, (error, stdout, stderr) => {
+    // Determine the correct Python command based on the OS
+    const pythonCommand = os.platform() === 'win32' ? 'python' : 'python3';
+    
+    console.log(`Project root directory: ${process.cwd()}`);
+    console.log(`Executing: ${pythonCommand} ${pythonScript} "${url}" "${downloadDir}"`);
+    
+    // Use spawn instead of exec for better control
+    const pythonProcess = spawn(
+      pythonCommand, 
+      [pythonScript, url, downloadDir],
+      {
+        stdio: ['ignore', 'pipe', 'pipe']
+      }
+    );
+    
+    let stdout = '';
+    let stderr = '';
+    
+    pythonProcess.stdout.on('data', (data) => {
+      stdout += data.toString();
+    });
+    
+    pythonProcess.stderr.on('data', (data) => {
+      stderr += data.toString();
+      console.log(`Python stderr: ${data.toString()}`);
+    });
+    
+    pythonProcess.on('error', (error) => {
+      clearInterval(progressInterval);
+      console.error('Failed to start Python process:', error);
+      reject(new Error(`Failed to start Python process: ${error.message}`));
+    });
+    
+    pythonProcess.on('close', (code) => {
       clearInterval(progressInterval);
       
-      if (error) {
-        console.error('Python script error:', error);
+      if (code !== 0) {
+        console.error(`Python process exited with code ${code}`);
         console.error('stderr:', stderr);
-        reject(new Error(`Failed to download audio: ${error.message}`));
+        reject(new Error(`Python process failed with code ${code}: ${stderr}`));
         return;
       }
       
       try {
+        console.log('Python script output:', stdout);
         const result = JSON.parse(stdout);
         
         if (!result.success) {
           reject(new Error(result.error || 'Failed to download audio'));
           return;
         }
+        
+        // 파일 존재 여부 확인
+        console.log(`Checking if file exists at: ${result.filepath}`);
+        if (!fsSync.existsSync(result.filepath)) {
+          console.error(`File reported as downloaded but not found at: ${result.filepath}`);
+          reject(new Error(`Download reported success but file not found at: ${result.filepath}. Check yt-dlp installation and permissions.`));
+          return;
+        }
+        
+        console.log(`File exists and has size: ${fsSync.statSync(result.filepath).size} bytes`);
         
         resolve({ 
           filePath: result.filepath, 
@@ -67,7 +111,7 @@ export async function downloadYouTubeAudio(trackId: string, url: string, progres
       } catch (parseError) {
         console.error('Failed to parse Python script output:', parseError);
         console.error('Output:', stdout);
-        reject(new Error('Failed to parse download results'));
+        reject(new Error('Failed to parse download results. Make sure yt-dlp is installed.'));
       }
     });
   });

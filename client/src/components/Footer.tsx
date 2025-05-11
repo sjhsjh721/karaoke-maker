@@ -9,7 +9,7 @@ export default function Footer() {
           <div>
             <div className="flex items-center gap-2 mb-4">
               <Music className="w-8 h-8 text-white" />
-              <h2 className="font-poppins font-bold text-2xl text-white">Harmonic</h2>
+              <h2 className="font-poppins font-bold text-2xl text-white">Karaoke Maker</h2>
             </div>
             <p className="mb-4">Transform your music experience with our audio extraction and transposition tools.</p>
             <div className="flex gap-4">
@@ -63,7 +63,7 @@ export default function Footer() {
         </div>
         
         <div className="mt-12 pt-8 border-t border-neutral-700 text-center text-sm">
-          <p>&copy; {new Date().getFullYear()} Harmonic. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} Karaoke Maker. All rights reserved.</p>
         </div>
       </div>
     </footer>

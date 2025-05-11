@@ -58,13 +58,12 @@ export class MemStorage implements IStorage {
     );
   }
   
-  async createAudioTrack(trackData: Omit<InsertAudioTrack, 'trackId'>): Promise<AudioTrack> {
+  async createAudioTrack(trackData: InsertAudioTrack): Promise<AudioTrack> {
     const id = this.currentId++;
-    const trackId = trackData.trackId || uuidv4();
     
     const track: AudioTrack = {
       id,
-      trackId,
+      trackId: trackData.trackId,
       title: trackData.title,
       artist: trackData.artist || "Unknown",
       videoId: trackData.videoId,
@@ -74,12 +73,11 @@ export class MemStorage implements IStorage {
       currentScale: trackData.currentScale || trackData.originalScale || "major",
       duration: trackData.duration || 0,
       filePath: trackData.filePath,
-      transposedPaths: {},
-      waveformData: "",
+      originalFilePath: trackData.originalFilePath || trackData.filePath,
       createdAt: new Date(),
     };
     
-    this.audioTracks.set(trackId, track);
+    this.audioTracks.set(trackData.trackId, track);
     return track;
   }
   

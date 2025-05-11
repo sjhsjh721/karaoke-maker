@@ -35,9 +35,9 @@ export default function Home() {
   return (
     <>
       <Helmet>
-        <title>Harmonic - Extract Instrumentals & Transform Music</title>
-        <meta name="description" content="Extract instrumental tracks from YouTube videos and transpose them to different musical keys in seconds with Harmonic." />
-        <meta property="og:title" content="Harmonic - Extract Instrumentals & Transform Music" />
+        <title>Karaoke Maker - Extract Instrumentals & Transform Music</title>
+        <meta name="description" content="Extract instrumental tracks from YouTube videos and transpose them to different musical keys in seconds with Karaoke Maker." />
+        <meta property="og:title" content="Karaoke Maker - Extract Instrumentals & Transform Music" />
         <meta property="og:description" content="Turn any YouTube song into an instrumental track and change its key with our easy-to-use audio processing tool." />
         <meta property="og:type" content="website" />
         <meta property="og:url" content={window.location.href} />

@@ -42,7 +42,6 @@ class AudioProcessor {
         cursorColor: options.cursorColor || 'transparent',
         barWidth: options.barWidth || 2,
         barRadius: options.barRadius || 3,
-        responsive: options.responsive !== undefined ? options.responsive : true,
         height: options.height || 80,
         normalize: true,
       });
@@ -83,23 +82,56 @@ class AudioProcessor {
     
     return new Promise((resolve, reject) => {
       try {
-        this.wavesurfer?.load(url);
+        // URL에 타임스탬프 추가하여 캐시 방지
+        const cacheBustedUrl = `${url}${url.includes('?') ? '&' : '?'}t=${Date.now()}`;
+        
+        // 최대 시도 횟수와 현재 시도 횟수 설정
+        let attempts = 0;
+        const maxAttempts = 3;
+        
+        const attemptLoad = () => {
+          attempts++;
+          console.log(`Attempting to load audio (${attempts}/${maxAttempts}): ${cacheBustedUrl}`);
+          
+          try {
+            this.wavesurfer?.load(cacheBustedUrl);
+          } catch (err) {
+            console.error(`Error during wavesurfer.load (attempt ${attempts}):`, err);
+            retryOrReject(err as Error);
+          }
+        };
+        
+        const retryOrReject = (err: Error) => {
+          if (attempts < maxAttempts) {
+            console.log(`Retrying audio load (${attempts}/${maxAttempts})...`);
+            setTimeout(attemptLoad, 1000); // 1초 후 재시도
+          } else {
+            console.error(`Failed to load audio after ${maxAttempts} attempts`);
+            this.wavesurfer?.un('ready', handleReady);
+            this.wavesurfer?.un('error', handleError);
+            reject(err);
+          }
+        };
         
         const handleReady = () => {
+          console.log('Wavesurfer ready event fired');
           this.wavesurfer?.un('ready', handleReady);
+          this.wavesurfer?.un('error', handleError);
           resolve();
         };
         
-        this.wavesurfer?.on('ready', handleReady);
-        
-        // Error handling
         const handleError = (err: Error) => {
+          console.error('Wavesurfer error event:', err);
           this.wavesurfer?.un('error', handleError);
-          reject(err);
+          retryOrReject(err);
         };
         
+        this.wavesurfer?.on('ready', handleReady);
         this.wavesurfer?.on('error', handleError);
+        
+        attemptLoad();
       } catch (error) {
+        console.error('Unexpected error in loadAudio:', error);
         reject(error);
       }
     });

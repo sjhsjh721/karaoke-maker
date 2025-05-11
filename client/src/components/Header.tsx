@@ -8,7 +8,7 @@ export default function Header() {
         <Link href="/">
           <div className="flex items-center gap-2 cursor-pointer">
             <Music className="w-8 h-8 text-primary" />
-            <h1 className="font-poppins font-bold text-2xl text-primary">Harmonic</h1>
+            <h1 className="font-poppins font-bold text-2xl text-primary">Karaoke Maker</h1>
           </div>
         </Link>
         <nav>

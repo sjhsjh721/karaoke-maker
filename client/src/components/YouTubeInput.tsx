@@ -8,7 +8,7 @@ import { validateYouTubeUrl } from '@/lib/utils';
 export default function YouTubeInput() {
   const [youtubeUrl, setYoutubeUrl] = useState('');
   const [urlError, setUrlError] = useState<string | null>(null);
-  const { processAudio, processingStatus } = useAudio();
+  const { processNewAudio, processingStatus } = useAudio();
   
   const handleUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setYoutubeUrl(e.target.value);
@@ -35,7 +35,7 @@ export default function YouTubeInput() {
     setUrlError(null);
     
     try {
-      await processAudio({ videoUrl: youtubeUrl });
+      await processNewAudio({ videoUrl: youtubeUrl });
     } catch (error) {
       // The error will be handled by the context
       console.error('Failed to extract audio:', error);
