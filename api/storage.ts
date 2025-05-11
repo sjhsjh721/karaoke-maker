@@ -1,4 +1,4 @@
-import { audioTracks, processingStatus, type AudioTrack, type ProcessingStatus, type InsertAudioTrack, type InsertProcessingStatus } from "@shared/schema";
+import { audioTracks, processingStatus, type AudioTrack, type ProcessingStatus, type InsertAudioTrack, type InsertProcessingStatus } from "../shared/schema.js";
 import { v4 as uuidv4 } from 'uuid';
 import * as fs from 'fs/promises';
 import * as path from 'path';

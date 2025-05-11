@@ -7,7 +7,7 @@ import multer from 'multer';
 import * as fsSync from 'fs';
 import { extractVideoId, downloadYouTubeAudio } from './youtubeDownloader.js';
 import { extractInstrumental, transposeAudio } from './audioProcessor.js';
-import { youtubeUrlSchema } from '@shared/schema';
+import { youtubeUrlSchema } from '../shared/schema.js';
 
 // Configure multer for file storage (although we'll use the storage interface)
 const upload = multer({ storage: multer.memoryStorage() });
