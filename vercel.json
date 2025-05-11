@@ -15,7 +15,10 @@
     },
     {
       "src": "api/**/*.py",
-      "use": "@vercel/python"
+      "use": "@vercel/python",
+      "config": {
+        "pythonVersion": "3.9"
+      }
     }
   ],
   "routes": [
@@ -23,10 +26,5 @@
       "src": "/(.*)",
       "dest": "/client/dist/index.html"
     }
-  ],
-  "functions": {
-    "api/**/*.py": {
-      "runtime": "python3.9"
-    }
-  }
+  ]
 }
