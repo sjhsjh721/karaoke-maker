@@ -1,5 +1,5 @@
 import { spawn, exec } from 'child_process';
-import { storage } from './storage';
+import { storage } from './storage.js';
 import path from 'path';
 import fs from 'fs/promises';
 import * as fsSync from 'fs';

@@ -1,12 +1,12 @@
 import type { Express, Request, Response } from "express";
 import { createServer, type Server } from "http";
-import { storage } from "./storage";
+import { storage } from "./storage.js";
 import path from "path";
 import { v4 as uuidv4 } from 'uuid';
 import multer from 'multer';
 import * as fsSync from 'fs';
-import { extractVideoId, downloadYouTubeAudio } from './youtubeDownloader';
-import { extractInstrumental, transposeAudio } from './audioProcessor';
+import { extractVideoId, downloadYouTubeAudio } from './youtubeDownloader.js';
+import { extractInstrumental, transposeAudio } from './audioProcessor.js';
 import { youtubeUrlSchema } from '@shared/schema';
 
 // Configure multer for file storage (although we'll use the storage interface)

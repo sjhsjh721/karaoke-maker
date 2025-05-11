@@ -2,7 +2,7 @@ import { spawn } from 'child_process';
 import path from 'path';
 import fs from 'fs/promises';
 import * as fsSync from 'fs';
-import { storage } from './storage';
+import { storage } from './storage.js';
 
 // Function to extract the instrumental track from an audio file using Demucs
 export async function extractInstrumental(

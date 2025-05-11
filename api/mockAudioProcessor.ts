@@ -2,7 +2,7 @@ import path from 'path';
 import fs from 'fs/promises';
 import * as fsSync from 'fs';
 import { exec } from 'child_process';
-import { transposeAudio } from './audioProcessor';
+import { transposeAudio } from './audioProcessor.js';
 
 // 이제 이 함수는 실제 FFmpeg를 사용하여 피치를 변경합니다
 export async function simulateAudioTransposition(
