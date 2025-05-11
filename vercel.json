@@ -23,7 +23,11 @@
   ],
   "routes": [
     {
-      "src": "/((?!api/).*)",
+      "src": "/api/(.*)",
+      "dest": "/api/$1"
+    },
+    {
+      "src": "/(.*)",
       "dest": "/index.html",
       "check": true
     }
